@@ -94,6 +94,9 @@ const Kuis: FunctionComponent = () => {
   const getChoices = (questions: IQuestion[], idx: number) =>
     questions[idx] ? questions[idx].items : []
 
+  const getQuestion = (questions: IQuestion[], idx: number) =>
+    decodeURIComponent(questions[idx] ? questions[idx].question : '')
+
   const handleSelect = (value: any) => {
     log(value)
     updateState({
@@ -105,14 +108,18 @@ const Kuis: FunctionComponent = () => {
     <Box flexDirection="column" width={100}>
       <Header />
       {state.loading ? (
-        <Text>Loading</Text>
+        <Text>Loading questions...</Text>
       ) : (
-        <Box>
-          >
-          <SelectInput
-            items={getChoices(state.questions, state.activeQuestions)}
-            onSelect={handleSelect}
-          />
+        <Box flexDirection="column">
+          <Box>
+            <Text>{getQuestion(state.questions, state.activeQuestions)}</Text>
+          </Box>
+          <Box>
+            <SelectInput
+              items={getChoices(state.questions, state.activeQuestions)}
+              onSelect={handleSelect}
+            />
+          </Box>
         </Box>
       )}
     </Box>

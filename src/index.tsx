@@ -5,6 +5,8 @@ import SelectInput from 'ink-select-input'
 
 import { toJSON, log } from './utils'
 
+import Header from './components/Header'
+
 interface IQuestion {
   category: string
   type: string
@@ -45,6 +47,7 @@ const Kuis: FunctionComponent = () => {
     questions: [],
     result: null,
   })
+
   const updateState = ((s, fn) => (newState: IPState) =>
     fn({ ...s, ...newState }))(state, setState)
 
@@ -99,7 +102,8 @@ const Kuis: FunctionComponent = () => {
   }
 
   return (
-    <Box>
+    <Box flexDirection="column" width={100}>
+      <Header />
       {state.loading ? (
         <Text>Loading</Text>
       ) : (

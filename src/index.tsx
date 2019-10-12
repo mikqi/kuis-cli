@@ -3,7 +3,7 @@ import { Box, Text } from 'ink'
 import got from 'got'
 import SelectInput from 'ink-select-input'
 
-import { toJSON, log } from './utils'
+import { toJSON, shuffleArray } from './utils'
 
 import Header from './components/Header'
 
@@ -32,6 +32,7 @@ interface IState {
   loading: boolean
   items: IItemsSelect[] | []
   result: any
+  correctCount: Number
 }
 
 interface IPState extends Partial<IState> {}
@@ -46,6 +47,7 @@ const Kuis: FunctionComponent = () => {
     loading: false,
     questions: [],
     result: null,
+    correctCount: 0,
   })
 
   const updateState = ((s, fn) => (newState: IPState) =>
@@ -78,11 +80,13 @@ const Kuis: FunctionComponent = () => {
     questions.map(question => ({
       ...question,
       correct_answer: decodeURIComponent(question.correct_answer),
-      choices: [...question.incorrect_answers, question.correct_answer],
-      items: createChoices([
+      choices: shuffleArray([
         ...question.incorrect_answers,
         question.correct_answer,
       ]),
+      items: shuffleArray(
+        createChoices([...question.incorrect_answers, question.correct_answer]),
+      ),
     }))
 
   const createChoices = (choices: string[]) =>
@@ -98,21 +102,34 @@ const Kuis: FunctionComponent = () => {
     decodeURIComponent(questions[idx] ? questions[idx].question : '')
 
   const handleSelect = (value: any) => {
-    log(value)
+    if (!state.questions[state.activeQuestions]) {
+      return
+    }
+    let correctCount = state.correctCount
+    if (value.value === state.questions[state.activeQuestions].correct_answer) {
+      correctCount = +correctCount + 1
+    }
     updateState({
       activeQuestions: state.activeQuestions + 1,
+      correctCount,
     })
   }
 
   return (
     <Box flexDirection="column" width={100}>
-      <Header />
+      <Header
+        correctCount={state.correctCount}
+        totalQuestion={state.questions.length}
+      />
       {state.loading ? (
         <Text>Loading questions...</Text>
-      ) : (
+      ) : state.activeQuestions < state.questions.length ? (
         <Box flexDirection="column">
           <Box>
-            <Text>{getQuestion(state.questions, state.activeQuestions)}</Text>
+            <Text>
+              #{state.activeQuestions + 1} :{' '}
+              {getQuestion(state.questions, state.activeQuestions)}
+            </Text>
           </Box>
           <Box>
             <SelectInput
@@ -120,6 +137,10 @@ const Kuis: FunctionComponent = () => {
               onSelect={handleSelect}
             />
           </Box>
+        </Box>
+      ) : (
+        <Box>
+          <Text>Finished</Text>
         </Box>
       )}
     </Box>

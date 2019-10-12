@@ -1,12 +1,18 @@
 import React from 'react'
 import { Box, Text } from 'ink'
 
-const Header = () => {
+interface HeaderProps {
+  correctCount: Number
+  totalQuestion: Number
+}
+
+const Header = ({ correctCount, totalQuestion }: HeaderProps) => {
   return (
-    <Box>
+    <Box flexDirection="column">
       <Text>Difficulty: Easy</Text>
-      <Text>Correctness: 10/20</Text>
-      <Text>Ini Satue</Text>
+      <Text>
+        Correctness: {correctCount}/{totalQuestion}
+      </Text>
     </Box>
   )
 }

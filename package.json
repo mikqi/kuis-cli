@@ -39,7 +39,7 @@
     "ink-spinner": "^3.0.0",
     "meow": "^6.1.0",
     "react": "^16.10.1",
-    "update-notifier": "^3.0.1"
+    "update-notifier": "^6.0.0"
   },
   "devDependencies": {
     "@types/got": "^9.6.7",
